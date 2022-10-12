@@ -1,7 +1,7 @@
 # Helm-variable-in-values
 
-**Part of the code in this repository comes from [helm](https://github.com/helm/helm)
-and [helm-cm-push](https://github.com/chartmuseum/helm-push). **
+Part of the code in this repository comes from [helm](https://github.com/helm/helm)
+and [helm-cm-push](https://github.com/chartmuseum/helm-push). 
 
 ## Install
 
