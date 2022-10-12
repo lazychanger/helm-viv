@@ -1,0 +1,13 @@
+name: "viv"
+version: "0.1.0"
+usage: "get the last release name"
+command: "$HELM_PLUGIN_DIR/bin/helm-viv"
+description: "get the last release name"
+downloaders:
+  - command: "bin/helm-viv"
+    protocols:
+      - "viv"
+useTunnel: false
+hooks:
+  install: "cd $HELM_PLUGIN_DIR; scripts/install_plugin.sh"
+  update: "cd $HELM_PLUGIN_DIR; scripts/install_plugin.sh"

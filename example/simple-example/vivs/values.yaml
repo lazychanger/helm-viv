@@ -1,0 +1,1 @@
+nameOverride: "{{ .Chart.Name }}-{{ .Chart.Version }}"

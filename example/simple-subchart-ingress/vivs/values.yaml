@@ -1,0 +1,4 @@
+nameOverride: "{{ .Values.nameOverride }}"
+fullnameOverride: "{{ .Values.fullnameOverride }}"
+
+serviceName: "{{ .Release.Name }}-svc"

@@ -1,0 +1,6 @@
+dependencies:
+- name: service
+  repository: file://../simple-subchart2
+  version: 0.1.0
+digest: sha256:642898ac0a8699e0d38c941ddbc888ec920ffdc66c83ab59c4a9cda5f9889e69
+generated: "2022-10-12T15:46:57.425319+08:00"

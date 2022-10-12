@@ -1,0 +1,6 @@
+dependencies:
+- name: ingress
+  repository: file://../simple-subchart-ingress
+  version: 0.1.0
+digest: sha256:69b459246c2b9f4d0b49b47d50cd83413a0fcbdd657540086183d83a60670132
+generated: "2022-10-12T17:53:03.350089+08:00"

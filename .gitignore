@@ -1,0 +1,17 @@
+.idea
+
+.env
+
+bin/
+dist/
+releases/
+testbin/
+vendor/
+
+**/*.pyc
+**/*.tgz
+**/*.tgz.prov
+
+charts/*.tgz
+
+vivTemp
