@@ -4,6 +4,9 @@ Part of the code in this repository comes from [helm](https://github.com/helm/he
 and [helm-cm-push](https://github.com/chartmuseum/helm-push). 
 
 ## Install
+```shell
+helm plugin install https://github.com/lazychanger/helm-viv
+```
 
 ### version
 ```shell
