@@ -3,6 +3,8 @@ module github.com/lazychanger/helm-variable-in-values
 go 1.18
 
 require (
+	github.com/BurntSushi/toml v1.2.0
+	github.com/Masterminds/sprig/v3 v3.2.2
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.5.0
 	helm.sh/helm/v3 v3.10.0
@@ -12,11 +14,9 @@ require (
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
-	github.com/BurntSushi/toml v1.2.0 // indirect
 	github.com/MakeNowJust/heredoc v1.0.0 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.1.1 // indirect
-	github.com/Masterminds/sprig/v3 v3.2.2 // indirect
 	github.com/Masterminds/squirrel v1.5.3 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect

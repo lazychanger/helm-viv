@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/lazychanger/helm-variable-in-values/cmd/helm-variable-in-values/utils"
+	"github.com/lazychanger/helm-variable-in-values/common"
 	vivEngine "github.com/lazychanger/helm-variable-in-values/pkg/engine"
 	pkgUtils "github.com/lazychanger/helm-variable-in-values/pkg/utils"
 	"github.com/pkg/errors"
@@ -44,6 +45,7 @@ Examples:
 	settings     = cli.New()
 	cliFlags     = new(utils.Flags)
 	actionConfig = new(action.Configuration)
+	version      = common.GetVersion()
 )
 
 func init() {
@@ -87,7 +89,7 @@ func main() {
 		Long:               usage,
 		SilenceUsage:       false,
 		DisableFlagParsing: true,
-		Version:            "1.0.0",
+		Version:            version.Version,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
 				return cmd.Usage()

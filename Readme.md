@@ -5,6 +5,11 @@ and [helm-cm-push](https://github.com/chartmuseum/helm-push).
 
 ## Install
 
+### version
+```shell
+helm viv version
+```
+
 ## Usage
 
 ### 1. Create viv-chart project
@@ -40,7 +45,7 @@ subChart:
 ### 3. Install
 
 ```shell
-$ helm viv template --generate-name exmaple/simple-exmaple -f ./values.yaml
+$ helm viv install --generate-name exmaple/simple-exmaple -f ./values.yaml --dry-run
 ```
 
 ## Debug
