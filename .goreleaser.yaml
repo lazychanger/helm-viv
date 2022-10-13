@@ -4,7 +4,7 @@ before:
   hooks:
     - go mod download
 builds:
-  - main: ./cmd/helm-viv
+  - main: ./cmd/helm-variable-in-values
     binary: ./bin/helm-viv
     env:
       - CGO_ENABLED=0
