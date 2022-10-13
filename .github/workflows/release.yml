@@ -19,6 +19,10 @@ jobs:
           go-version: 1.18
       - name: setup-yq
         uses: chrisdickinson/setup-yq@v1.0.0
+        with:
+          yq-version: v4.25.3
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v3
         with:
