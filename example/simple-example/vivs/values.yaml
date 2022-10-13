@@ -1,1 +1,3 @@
 nameOverride: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+
+test: {{ include "simple-example.fullname" . }}
