@@ -17,7 +17,6 @@ builds:
       - amd64
       - arm
       - arm64
-      - "386"
     goarm:
       - "6"
       - "7"
@@ -34,21 +33,6 @@ builds:
 archives:
   - id: tarball
     format: tar.gz
-    name_template: '{{ .Os }}_{{ .Arch }}{{ if .Arm }}_v{{ .Arm }}{{ end }}'
     files:
       - LICENSE
       - plugin.yaml
-    format_overrides:
-      - goos: windows
-        format: zip
-    replacements:
-      amd64: 64-bit
-      386: 32-bit
-      arm: ARM
-      arm64: ARM64
-      darwin: macOS
-      linux: Linux
-      windows: Windows
-      openbsd: OpenBSD
-      netbsd: NetBSD
-      freebsd: FreeBSD
