@@ -19,7 +19,9 @@ builds:
     goarm:
       - "6"
       - "7"
-
+    hooks:
+      post:
+        - upx "{{ .Path }}"
 archives:
   - id: tarball
     format: tar.gz
