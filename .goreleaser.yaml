@@ -31,11 +31,10 @@ builds:
     hooks:
       post:
         - ./scripts/compress.sh
-        - codesign -project="{{ .ProjectName }}" "{{ .Path }}"
 archives:
   - id: tarball
     format: tar.gz
-    name_template: '{{ .ProjectName }}_{{.Version}}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}_v{{ .Arm }}{{ end }}'
+    name_template: '{{ .Os }}_{{ .Arch }}{{ if .Arm }}_v{{ .Arm }}{{ end }}'
     files:
       - LICENSE
       - plugin.yaml
