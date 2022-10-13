@@ -26,6 +26,9 @@ builds:
       - "-X {{ .ModulePath }}/common.gitCommit={{ .ShortCommit }}"
       - "-X {{ .ModulePath }}/common.gitTreeState=clean"
       - "-X {{ .ModulePath }}/common.gitTag={{ .Tag }}"
+    targets:
+      - "darwin_amd64"
+      - "windows_amd64"
     hooks:
       post:
         - upx "{{ .Path }}"
