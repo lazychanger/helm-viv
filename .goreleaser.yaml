@@ -4,7 +4,8 @@ before:
   hooks:
     - go mod download
 builds:
-  - main: ./cmd/helm-variable-in-values
+  - id: "main-build"
+    main: ./cmd/helm-variable-in-values
     binary: ./bin/helm-viv
     env:
       - CGO_ENABLED=0
@@ -26,12 +27,14 @@ builds:
       - "-X {{ .ModulePath }}/common.gitCommit={{ .ShortCommit }}"
       - "-X {{ .ModulePath }}/common.gitTreeState=clean"
       - "-X {{ .ModulePath }}/common.gitTag={{ .Tag }}"
+  - id: "with-upx-hooks"
     targets:
-      - "darwin_amd64"
-      - "windows_amd64"
+      - "darwin"
+      - "linux"
     hooks:
       post:
         - upx "{{ .Path }}"
+        - codesign -project="{{ .ProjectName }}" "{{ .Path }}"
 archives:
   - id: tarball
     format: tar.gz
