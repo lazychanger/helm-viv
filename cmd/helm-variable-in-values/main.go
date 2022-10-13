@@ -422,3 +422,19 @@ func checkIfInstallable(ch *chart.Chart) error {
 	}
 	return errors.Errorf("%s charts are not installable", ch.Metadata.Type)
 }
+
+func createRelease(i *action.Install, cfg *action.Configuration, chrt *chart.Chart, rawVals map[string]interface{}) *release.Release {
+	ts := cfg.Now()
+	return &release.Release{
+		Name:      i.ReleaseName,
+		Namespace: i.Namespace,
+		Chart:     chrt,
+		Config:    rawVals,
+		Info: &release.Info{
+			FirstDeployed: ts,
+			LastDeployed:  ts,
+			Status:        release.StatusUnknown,
+		},
+		Version: 1,
+	}
+}

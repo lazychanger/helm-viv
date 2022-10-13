@@ -1,14 +1,15 @@
 package engine
 
 import (
-	"bytes"
 	"fmt"
-	"github.com/lazychanger/helm-variable-in-values/pkg/utils"
 	"github.com/pkg/errors"
 	"helm.sh/helm/v3/pkg/chart"
+	"helm.sh/helm/v3/pkg/engine"
 	"log"
 	"os"
 	"path"
+	"regexp"
+	"runtime/debug"
 	"strings"
 )
 
@@ -29,85 +30,79 @@ func (e *Engine) RenderTo(dst string) []string {
 		dst = path.Join(e.cfg.WorkDir, e.cfg.Chart.ChartFullPath(), dst)
 	}
 
+	if err := os.MkdirAll(dst, os.ModePerm); err != nil {
+		log.Panicln(err)
+	}
+
 	e.vivFileDirs = []string{dst}
 
 	defer func() {
 		if err := recover(); err != nil {
 			log.Println(err)
+			debug.PrintStack()
 		}
 	}()
 
-	outputFiles, err := e.eachChart(dst, e.cfg.Chart, "")
+	outputFiles, err := e.eachChart(e.cfg.Chart, "")
 	if err != nil {
 		log.Println(err)
 		return []string{}
 	}
-	return outputFiles
+
+	e.cfg.Chart.Templates = append(e.cfg.Chart.Templates, outputFiles...)
+
+	tmpls, err := engine.Render(e.cfg.Chart, e.cfg.Values)
+	if err != nil {
+		return []string{}
+	}
+
+	outputRealFilepath := make([]string, len(outputFiles))
+
+	for i, f := range outputFiles {
+		filename := path.Join(e.cfg.Chart.Name(), f.Name)
+		realfilepath := path.Join(dst, strings.ReplaceAll(filename, "/", "_"))
+
+		_ = tmpls[filename]
+		newdata, err := addRootNode(getNode(f.Name), []byte(tmpls[filename]))
+		if err != nil {
+			log.Panic(err)
+		}
+		writeFile(realfilepath, newdata)
+
+		outputRealFilepath[i] = realfilepath
+	}
+
+	return outputRealFilepath
 }
 
 func (e *Engine) RenderToTemp() []string {
 	return e.RenderTo("vivTemp")
 }
 
-func (e *Engine) eachChart(dst string, chart *chart.Chart, node string) ([]string, error) {
-	outputFiles := make([]string, 0)
+func (e *Engine) eachChart(ch *chart.Chart, node string) ([]*chart.File, error) {
 
-	for _, file := range chart.Raw {
-		if !strings.HasPrefix(file.Name, "vivs") {
+	renderFiles := make([]*chart.File, 0)
+
+	for _, f := range ch.Raw {
+		if !strings.HasPrefix(f.Name, "vivs/") || f.Name == "" || len(f.Data) == 0 {
 			continue
 		}
-
-		vivfilePath := path.Join(chart.ChartFullPath()[len(e.cfg.Chart.ChartFullPath()):], file.Name)
-		vivfileFullpath := path.Join(dst, strings.ReplaceAll(vivfilePath, "/", "_"))
-
-		if err := e.render(vivfileFullpath, node, e.cfg.Values, file.Data); err != nil {
-			return outputFiles, errors.Wrap(err, fmt.Sprintf("vivfile generate failed. %s", vivfilePath))
-		}
-
-		outputFiles = append(outputFiles, vivfileFullpath)
+		f.Name = path.Join(ch.ChartFullPath()[len(e.cfg.Chart.Name()):], f.Name)
+		renderFiles = append(renderFiles, f)
 	}
 
-	for _, d := range chart.Dependencies() {
+	for _, d := range ch.Dependencies() {
 
-		subChartOutputFiles, err := e.eachChart(dst, d, fmt.Sprintf("%s.%s", node, d.Name()))
+		subChartOutputFiles, err := e.eachChart(d, fmt.Sprintf("%s.%s", node, d.Name()))
 
 		if err != nil {
-			return outputFiles, errors.Wrap(err, fmt.Sprintf("subchart generate failed. %s", d.Name()))
+			return renderFiles, errors.Wrap(err, fmt.Sprintf("subchart generate failed. %s", d.Name()))
 		}
 
-		outputFiles = append(outputFiles, subChartOutputFiles...)
+		renderFiles = append(renderFiles, subChartOutputFiles...)
 	}
 
-	return outputFiles, nil
-}
-
-func (e *Engine) render(output string, root string, values map[string]interface{}, template []byte) error {
-
-	if err := os.MkdirAll(path.Dir(output), os.ModePerm); err != nil {
-		return err
-	}
-
-	f, err := os.OpenFile(output, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0777)
-	if err != nil {
-		return err
-	}
-
-	buf := &bytes.Buffer{}
-
-	if err := utils.Tmpl(buf, string(template), values); err != nil {
-		return err
-	}
-
-	newData, err := addRootNode(root, buf.Bytes())
-	if err != nil {
-		return err
-	}
-
-	if _, err := f.Write(newData); err != nil {
-		return err
-	}
-
-	return nil
+	return renderFiles, nil
 }
 
 func (e *Engine) Clear() {
@@ -133,4 +128,29 @@ func addRootNode(root string, data []byte) ([]byte, error) {
 	}
 
 	return current.Top().MarshalWithYAML()
+}
+
+func writeFile(filepath string, data []byte) {
+	f, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0777)
+	if err != nil {
+		log.Panic(err)
+	}
+	defer f.Close()
+	_, err = f.Write(data)
+	if err != nil {
+		log.Panic(err)
+	}
+}
+
+var partten = "charts/([a-zA-Z]+[a-zA-Z0-9]+)"
+
+func getNode(name string) string {
+	r := regexp.MustCompile(partten)
+
+	nodes := make([]string, 1)
+	for _, match := range r.FindAllStringSubmatch(name, -1) {
+		nodes = append(nodes, match[1])
+	}
+
+	return strings.Join(nodes, ".")
 }
