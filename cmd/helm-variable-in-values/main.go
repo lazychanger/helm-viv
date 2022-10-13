@@ -183,19 +183,6 @@ func buildVIVEngine(args []string) (*vivEngine.Engine, error) {
 		Chart:   chartRequested,
 	})
 
-	//log.Println(engine.Render(chartRequested, values))
-	//log.Println(engine.Render(&chart.Chart{
-	//	Metadata: &chart.Metadata{
-	//		Name:    "viv-values",
-	//		Version: "v2",
-	//	},
-	//	Raw: []*chart.File{
-	//		&chart.File{
-	//			Name: "v2v-values",
-	//			Data: yaml.Marshal()
-	//		},
-	//	},
-	//}, values))
 	return e, nil
 }
 
