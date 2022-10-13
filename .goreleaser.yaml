@@ -28,9 +28,8 @@ builds:
       - "-X {{ .ModulePath }}/common.gitTreeState=clean"
       - "-X {{ .ModulePath }}/common.gitTag={{ .Tag }}"
   - id: "with-upx-hooks"
-    targets:
-      - "darwin"
-      - "linux"
+    ignore:
+      - goos: windows
     hooks:
       post:
         - upx "{{ .Path }}"
