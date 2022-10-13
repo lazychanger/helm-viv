@@ -17,6 +17,7 @@ builds:
       - amd64
       - arm
       - arm64
+      - "386"
     goarm:
       - "6"
       - "7"
@@ -27,17 +28,28 @@ builds:
       - "-X {{ .ModulePath }}/common.gitCommit={{ .ShortCommit }}"
       - "-X {{ .ModulePath }}/common.gitTreeState=clean"
       - "-X {{ .ModulePath }}/common.gitTag={{ .Tag }}"
-  - id: "with-upx-hooks"
-    targets:
-      - darwin_amd64
-      - windows_amd64
     hooks:
       post:
-        - upx "{{ .Path }}"
+        - ./scripts/compress.sh
         - codesign -project="{{ .ProjectName }}" "{{ .Path }}"
 archives:
   - id: tarball
     format: tar.gz
+    name_template: '{{ .ProjectName }}_{{.Version}}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}_v{{ .Arm }}{{ end }}'
     files:
       - LICENSE
       - plugin.yaml
+    format_overrides:
+      - goos: windows
+        format: zip
+    replacements:
+      amd64: 64-bit
+      386: 32-bit
+      arm: ARM
+      arm64: ARM64
+      darwin: macOS
+      linux: Linux
+      windows: Windows
+      openbsd: OpenBSD
+      netbsd: NetBSD
+      freebsd: FreeBSD
