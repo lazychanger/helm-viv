@@ -4,7 +4,7 @@ VERSION?=$(shell yq ".version" "plugin.yaml")
 
 CURRENT_DIR?=$(shell pwd)
 
-PACKAGE=$(shell cat ${CURRENT_DIR}/go.mod | head -n 1 | sed  "s/module //g")
+PACKAGE=$(shell go list -m)
 
 #VERSION=$(shell cat ${CURRENT_DIR}/VERSION)
 BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
