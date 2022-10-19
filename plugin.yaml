@@ -1,5 +1,5 @@
 name: "viv"
-version: "0.2.1"
+version: "0.2.2"
 usage: "get the last release name"
 command: "$HELM_PLUGIN_DIR/bin/helm-viv"
 description: "get the last release name"
