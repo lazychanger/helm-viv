@@ -9,7 +9,6 @@ import (
 	"os"
 	"path"
 	"regexp"
-	"runtime/debug"
 	"strings"
 )
 
@@ -36,13 +35,6 @@ func (e *Engine) RenderTo(dst string) []string {
 
 	e.vivFileDirs = []string{dst}
 
-	defer func() {
-		if err := recover(); err != nil {
-			log.Println(err)
-			debug.PrintStack()
-		}
-	}()
-
 	outputFiles, err := e.eachChart(e.cfg.Chart, "")
 	if err != nil {
 		log.Println(err)
@@ -62,10 +54,10 @@ func (e *Engine) RenderTo(dst string) []string {
 		filename := path.Join(e.cfg.Chart.Name(), f.Name)
 		realfilepath := path.Join(dst, strings.ReplaceAll(filename, "/", "_"))
 
-		_ = tmpls[filename]
 		newdata, err := addRootNode(getNode(f.Name), []byte(tmpls[filename]))
 		if err != nil {
-			log.Panic(err)
+			log.Println(tmpls[filename])
+			panic(errors.Wrap(err, fmt.Sprintf("file: %s", filename)))
 		}
 		writeFile(realfilepath, newdata)
 
