@@ -46,6 +46,7 @@ Examples:
 	cliFlags     = new(utils.Flags)
 	actionConfig = new(action.Configuration)
 	version      = common.GetVersion()
+	helmbin      = "helm"
 )
 
 func init() {
@@ -68,6 +69,10 @@ func init() {
 	settings.BurstLimit = utils.IntDefaultValue(cliFlags.GetInt("burst-limit"), settings.BurstLimit)
 	settings.RepositoryConfig = utils.StringDefaultValue(cliFlags.GetString("repository-config"), settings.RepositoryConfig)
 
+	_helmbin := os.Getenv("HELM_VIV_HELMBIN")
+	if _helmbin != "" {
+		helmbin = _helmbin
+	}
 }
 
 func main() {
@@ -236,8 +241,8 @@ func clearFlags(args []string) []string {
 
 func proxyHelmCmd(args []string) error {
 
-	log.Printf("exec: helm %s", strings.Join(args, " "))
-	cmd := exec.Command("helm", args...)
+	log.Printf("exec: %s %s", helmbin, strings.Join(args, " "))
+	cmd := exec.Command(helmbin, args...)
 	cmd.Env = os.Environ()
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

@@ -85,4 +85,9 @@ $ tree ./example/simple-example
 #    ├── autoscaling.yaml
 #    └── values.yaml
 ```
+## Config
 
+### Env
+| name             | default | desc                                    |
+|------------------|---------|-----------------------------------------|
+| HELM_VIV_HELMBIN | helm    | use helmbin when viv proxy helm command |
