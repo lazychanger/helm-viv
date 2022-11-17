@@ -40,10 +40,11 @@ func (e *Engine) RenderTo(dst string) []string {
 		panic(errors.Wrap(err, "eachChart failed"))
 	}
 
-	//e.cfg.Chart.Templates = append(e.cfg.Chart.Templates, outputFiles...)
-	//e.cfg.Chart.Files = append(e.cfg.Chart.Files, outputFiles...)
-	//e.cfg.Chart.Raw = append(e.cfg.Chart.Raw, outputFiles...)
+	e.cfg.Chart.Templates = append(e.cfg.Chart.Templates, outputFiles...)
+	e.cfg.Chart.Files = append(e.cfg.Chart.Files, outputFiles...)
+	e.cfg.Chart.Raw = append(e.cfg.Chart.Raw, outputFiles...)
 	//
+
 	tmpls, err := engine.Render(e.cfg.Chart, e.cfg.Values)
 	if err != nil {
 		panic(errors.Wrap(err, "vivs render failed"))
