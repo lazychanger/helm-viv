@@ -26,7 +26,7 @@ func NewEngine(cfg *Config) *Engine {
 
 func (e *Engine) RenderTo(dst string) []string {
 	if !path.IsAbs(dst) {
-		dst = path.Join(e.cfg.WorkDir, e.cfg.Chart.ChartFullPath(), dst)
+		dst = path.Join(e.cfg.WorkDir, dst)
 	}
 
 	if err := os.MkdirAll(dst, os.ModePerm); err != nil {
@@ -37,15 +37,17 @@ func (e *Engine) RenderTo(dst string) []string {
 
 	outputFiles, err := e.eachChart(e.cfg.Chart, "")
 	if err != nil {
-		log.Println(err)
-		return []string{}
+		panic(errors.Wrap(err, "eachChart failed"))
 	}
 
 	e.cfg.Chart.Templates = append(e.cfg.Chart.Templates, outputFiles...)
+	e.cfg.Chart.Files = append(e.cfg.Chart.Files, outputFiles...)
+	e.cfg.Chart.Raw = append(e.cfg.Chart.Raw, outputFiles...)
+	//
 
 	tmpls, err := engine.Render(e.cfg.Chart, e.cfg.Values)
 	if err != nil {
-		return []string{}
+		panic(errors.Wrap(err, "vivs render failed"))
 	}
 
 	outputRealFilepath := make([]string, len(outputFiles))
@@ -80,6 +82,7 @@ func (e *Engine) eachChart(ch *chart.Chart, node string) ([]*chart.File, error) 
 			continue
 		}
 		f.Name = path.Join(ch.ChartFullPath()[len(e.cfg.Chart.Name()):], f.Name)
+		log.Printf("load viv files: %s", f.Name)
 		renderFiles = append(renderFiles, f)
 	}
 

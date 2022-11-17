@@ -183,7 +183,7 @@ func buildVIVEngine(args []string) (*vivEngine.Engine, error) {
 	}
 
 	e := vivEngine.NewEngine(&vivEngine.Config{
-		WorkDir: strings.TrimRight(workdir[0:len(workdir)-len(chartRequested.Name())], "/"),
+		WorkDir: strings.TrimRight(workdir, "/"),
 		Values:  values,
 		Chart:   chartRequested,
 	})
