@@ -3,7 +3,7 @@ module github.com/lazychanger/helm-variable-in-values
 go 1.18
 
 require (
-	github.com/BurntSushi/toml v1.2.0
+	github.com/BurntSushi/toml v1.2.1
 	github.com/Masterminds/sprig/v3 v3.2.2
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.6.1
